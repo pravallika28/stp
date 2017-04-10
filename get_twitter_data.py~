@@ -8,7 +8,6 @@ import os
 import pickle
 from datetime import timedelta
 import oauth2
-import csv
 
 class TwitterData:
     #start __init__
@@ -30,8 +29,7 @@ class TwitterData:
             for i in range(0,6):
                 params = {'since': self.weekDates[i+1], 'until': self.weekDates[i]}
                 self.weekTweets[i] = self.getData(keyword, params)
-                #print self.weekDates[i]
-		#end loop
+            #end loop
             
             #Write data to a pickle file
             filename = 'data/weekTweets/weekTweets_'+urllib.unquote(keyword.replace("+", " "))+'_'+str(int(random.random()*10000))+'.txt'
@@ -43,10 +41,10 @@ class TwitterData:
                 params = {'since': self.weekDates[i+1], 'until': self.weekDates[i]}
                 self.weekTweets[i] = self.getData(keyword, params)
             #end loop
-        elif(time == 'range'):
-            params = {'since':'2017-01-02', 'until':'2017-01-07'}
-	    self.weekTweets[0] = self.getData(keyword, params)
-            #end loop
+	else
+		params = {'since' : '2015-01-02', 'until': '2015-01-07'}
+	        self.weekTweets[0] = self.getData(keyword, params)
+	    #end loop	
         return self.weekTweets
     '''
         inpfile = open('data/weekTweets/weekTweets_obama_7303.txt')
@@ -120,17 +118,10 @@ class TwitterData:
             print "API Error"
             print jsonData['errors']
         else:
-'''	    with open('retrievedTweets.csv', 'w') as csvfile:
-		fields = ['sentiment','tweet']
-		writer = csv.DictWriter(csvfile, fieldnames=fields)
-		writer.writeheader()
-		for item in jsonData['statuses']:
-                	tweets.append(item['text'])            
-			tweets.append(item['created_at'])
-			txt=item['text'].encode('utf-8')
-			date=item['created_at']
-			writer.writerow({'sentiment':'default', 'tweet':txt})
-'''      return tweets      
+            for item in jsonData['statuses']:
+                #tweets.append(item['text'])  
+		tweets.append(item['created_at'])          
+        return tweets      
     #end    
 
 #end class
