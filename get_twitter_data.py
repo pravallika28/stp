@@ -43,10 +43,9 @@ class TwitterData:
                 params = {'since': self.weekDates[i+1], 'until': self.weekDates[i]}
                 self.weekTweets[i] = self.getData(keyword, params)
             #end loop
-        elif(time == 'range'):
-            params = {'since':'2017-01-02', 'until':'2017-01-07'}
-	    self.weekTweets[0] = self.getData(keyword, params)
-            #end loop
+#        elif(time == 'range'):
+#            params = {'since':'2017-04-02', 'until':'2017-04-09'}
+#	    self.weekTweets[0] = self.getData(keyword, params)
         return self.weekTweets
     '''
         inpfile = open('data/weekTweets/weekTweets_obama_7303.txt')
@@ -102,7 +101,7 @@ class TwitterData:
     
     #start getTwitterData
     def getData(self, keyword, params = {}):
-        maxTweets = 50
+        maxTweets = 500
         url = 'https://api.twitter.com/1.1/search/tweets.json?'    
         data = {'q': keyword, 'lang': 'en', 'result_type': 'recent', 'count': maxTweets, 'include_entities': 0}
 
@@ -112,25 +111,28 @@ class TwitterData:
                 data[key] = value
         
         url += urllib.urlencode(data)
-        
+        print "inside getData"
         response = self.oauth_req(url)
         jsonData = json.loads(response)
         tweets = []
+#	print jsonData['statuses']
         if 'errors' in jsonData:
             print "API Error"
             print jsonData['errors']
         else:
-'''	    with open('retrievedTweets.csv', 'w') as csvfile:
-		fields = ['sentiment','tweet']
+	    with open('retrievedTweets.csv', 'w') as csvfile:
+		print "opened csvfile"
+		fields = ['sentiment','date','tweet']
 		writer = csv.DictWriter(csvfile, fieldnames=fields)
 		writer.writeheader()
 		for item in jsonData['statuses']:
-                	tweets.append(item['text'])            
+			tweets.append(item['text'])            
 			tweets.append(item['created_at'])
 			txt=item['text'].encode('utf-8')
 			date=item['created_at']
-			writer.writerow({'sentiment':'default', 'tweet':txt})
-'''      return tweets      
+#			print txt
+			writer.writerow({'sentiment':'positive','date':date,'tweet':txt})
+        return tweets      
     #end    
 
 #end class
